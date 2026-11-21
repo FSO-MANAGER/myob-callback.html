@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MYOB Authorization</title>
+  <style>
+    body { font-family: sans-serif; max-width: 500px; margin: 60px auto; text-align: center; }
+    code { display: block; background: #f4f4f4; padding: 12px; margin: 16px 0; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h2 id="status">Completing MYOB sign-in...</h2>
+  <p id="message">You can close this window once your desktop app updates.</p>
+  <code id="fallback" style="display:none;"></code>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const businessId = params.get("businessId");
+    const error = params.get("error");
+
+    if (error) {
+      document.getElementById("status").textContent = "Authorization Failed";
+      document.getElementById("message").textContent = params.get("error_description") || error;
+    } else if (code) {
+      // Forward to your desktop app's temporary local HTTP listener
+      // const localPort = 54321; // Or pass dynamically via the OAuth 'state' parameter
+      // window.location.href = `http://127.0.0.1:${localPort}/callback?code=${encodeURIComponent(code)}&businessId=${encodeURIComponent(businessId || "")}`;
+
+      // Fallback if the local listener isn't reachable
+      setTimeout(() => {
+        document.getElementById("status").textContent = "Copy Authorization Code";
+        document.getElementById("message").textContent = "Paste this code into your desktop application:";
+        const fallbackEl = document.getElementById("fallback");
+        fallbackEl.style.display = "block";
+        fallbackEl.textContent = code;
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
